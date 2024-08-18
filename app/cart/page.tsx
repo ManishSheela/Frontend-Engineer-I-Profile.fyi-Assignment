@@ -8,6 +8,7 @@ import { Product } from "@/types";
 import CouponCode from "./../../components/ui/CouponCode";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const DISCOUNT_CODES = [
 	{
@@ -48,15 +49,15 @@ const CartPage = () => {
 	const cart = useCart();
 	const [discountCode, setDiscountCode] = useState("");
 	const [appliedDiscount, setAppliedDiscount] = useState<any>(null);
-
-	// Static shipping fee (you can adjust this or make it dynamic)
-	const shippingFee = 20;
+	const router = useRouter();
 
 	// Calculate subtotal by summing up the prices for all items
 	const subtotal = cart.items.reduce(
 		(sum, item) => sum + item.price * (item.quantity || 1),
 		0
 	);
+	// Static shipping fee (you can adjust this or make it dynamic)
+	const shippingFee = subtotal > 100 ? 0 : 20;
 
 	// Calculate discount based on discount code
 	const handleRedeem = () => {
@@ -91,7 +92,7 @@ const CartPage = () => {
 		return 0;
 	};
 
-	const discountAmount = calculateDiscount();
+	const discountAmount = calculateDiscount().toFixed(2);
 	const total = Math.max(subtotal - discountAmount, 0) + shippingFee;
 
 	return (
@@ -163,7 +164,10 @@ const CartPage = () => {
 									<span>Total</span>
 									<Currency value={total} />
 								</div>
-								<button className="w-full bg-black text-white py-2 rounded">
+								<button
+									onClick={() => router.push("/checkout")}
+									className="w-full bg-black text-white py-2 rounded"
+								>
 									Check out
 								</button>
 							</div>
