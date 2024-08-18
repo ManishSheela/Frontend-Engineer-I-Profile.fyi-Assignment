@@ -5,7 +5,7 @@ type Props = {
 	value: string | number;
 };
 
-const currencyMap = {
+const currencyMap: { [key: string]: string } = {
 	$: "USD",
 	"₹": "INR",
 	// Add more  if needed
